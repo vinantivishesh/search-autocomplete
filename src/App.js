@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import useDebounce from './hooks/useDebounce';
 import './App.css';
 var data = require('./MOCK_DATA.json');
 
 function App() {
 
   const [value, setValue] = useState('');
+
+  const debouncedSearch = useDebounce(value, 500);
 
   const onChange = (event) => {
     setValue(event.target.value);
@@ -37,7 +40,7 @@ function App() {
         <div className='dropdown'>
           {data
           .filter(item => {
-            const searchTerm = value.toLocaleLowerCase();
+            const searchTerm = debouncedSearch.toLocaleLowerCase();
             const fullName = item.full_name.toLocaleLowerCase();
             return searchTerm && fullName.startsWith(searchTerm) && searchTerm !== fullName;
           })
