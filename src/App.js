@@ -1,23 +1,58 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+var data = require('./MOCK_DATA.json');
 
 function App() {
+
+  const [value, setValue] = useState('');
+
+  const onChange = (event) => {
+    setValue(event.target.value);
+  }
+
+  const onSelect = (selectedItem) => {
+    setValue(selectedItem);
+  }
+
+  const onSearch = (searchTerm) => {
+    console.log(searchTerm);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Search</h1>
+      <div className='search-container'>
+        <div className='search-inner'>
+          <input 
+            type="text" 
+            value={value}
+            onChange={onChange}
+          />
+          <button
+            onClick={() => onSearch(value)}
+          >
+            Search
+          </button>
+        </div>
+        <div className='dropdown'>
+          {data
+          .filter(item => {
+            const searchTerm = value.toLocaleLowerCase();
+            const fullName = item.full_name.toLocaleLowerCase();
+            return searchTerm && fullName.startsWith(searchTerm) && searchTerm !== fullName;
+          })
+          .slice(0, 10)
+          .map((item) => (
+              <div
+                className='dropdown-row'
+                onClick={() => onSelect(item.full_name)}
+                key={item.full_name}
+              >
+                {item.full_name}
+              </div>
+            ))}
+        </div>
+      </div>
     </div>
   );
 }
